@@ -1,0 +1,20 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "server for TTsar",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "multer": "^1.2.1",
+    "path": "^0.12.7",
+    "pg": "^6.1.2",
+    "pg-native": "^1.10.0",
+    "winston": "^2.3.0"
+  }
+}

@@ -1,5 +1,4 @@
 var express = require('express');
-var app = express();
 var loger = require('../libs/loger')(module);
 var bodyParser = require('body-parser');
 var path = require('path');
@@ -19,21 +18,21 @@ var storage = multer.diskStorage({
 var upload = multer({storage: storage}).single('photo');
 var bl = new BL();
 
-app.use(bodyParser.urlencoded({
+router.use(bodyParser.urlencoded({
     extended: true
 }));
-app.use(bodyParser.json());
+router.use(bodyParser.json());
 
 
 
 router.get('/status', requestStatus);
 router.get('/get-status-info', requestInfo);
-router.post('/user/send-message', upload, sendMessage);
+router.post('/user/send-message', sendMessage);
 
 function requestStatus(req, res) {
     bl.getRoutes(function (error, response) {
         if (error) {
-            res.status(error.error).send(error);
+            res.status(500).send(error);
         }
         else {
             res.status(200).send(response);
@@ -45,7 +44,7 @@ function requestInfo(req, res) {
     //if req.query.id == undifined
     bl.getRoute(req.query.id, function (error, response) {
         if (error) {
-            res.status(error.error).send(error);
+            res.status(500).send(error);
         }
         else {
             res.status(200).send(response);
@@ -55,14 +54,13 @@ function requestInfo(req, res) {
 
 function sendMessage(req, res) {
 
-    loger.info('sending');
-    loger.info(req.body);
-    loger.info(req.file);
-    if (bl.sendMessage(req.body, req.file)) {
-        res.status(200).send("ok");
-    }
-    else {
-        res.status(500).send("error");
-    }
+    bl.sendMessage(req.body,function (error, response) {
+        if (error) {
+            res.status(500).send(error);
+        }
+        else {
+            res.status(200).send(response);
+        }
+    });
 }
 module.exports = router;

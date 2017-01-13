@@ -1,20 +1,11 @@
 class Route{
-    constructor(type,way,status){
+    constructor(type,way,status, message){
         this.Type = type;
         this.Way = way;
         this.Status = status;
-    }
-    get status(){
-        return this.Status;
-    }
-    set status(value){
-        this.Status = value;
-    }
-    get way(){
-        return this.Way;
-    }
-    get type(){
-        return this.Type;
+        this.Message = message;
     }
 
 }
+
+module.exports = Route;

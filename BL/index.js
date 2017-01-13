@@ -1,5 +1,7 @@
 var DAL = require('../DAL');
 var Message = require('../Models/message');
+var Route = require('../Models/route');
+
 var loger = require('../libs/loger')(module);
 class BL {
     constructor() {
@@ -7,7 +9,6 @@ class BL {
     }
 
     getRoutes(done) {
-        loger.info('BL - GetRoutes');
         this.dal.getRoutes(function (error, routes) {
             if (error) {
                 let err = {
@@ -91,31 +92,72 @@ class BL {
             });
     }
 
-    getMessagesByRouteID(id) {
+    sendMessage(body, done) {
+        loger.info(body);
+        loger.info(body.geotag);
+        let message = new Message(body.message, [body.geotag[0], body.geotag[1]], new Date().toISOString(), body.photo, 'unreaded');
 
+        this.dal.sendMessage(message,function (error) {
+            if (error) {
+                let err = {
+                    'result': false,
+                    'data': error.data,
+                    'error': error.code
+                };
+                done(err);
+            }
+            else {
+                let res = {
+                    'result': true
+                };
+                done(null, res);
+            }
+
+        });
     }
 
-    getRouteFromId(id) {
+    changeMessageStatus(request, done) {
+        let message_id = request.message_id;
+        let message_status = request.status;
+        this.dal.changeMessageStatus(message_id, message_status,function (error) {
+            if (error) {
+                let err = {
+                    'result': false,
+                    'data': error.data,
+                    'error': error.code
+                };
+                done(err);
+            }
+            else {
+                let res = {
+                    'result': true
+                };
+                done(null, res);
+            }
 
+        });
     }
 
-    getTypeFromId(id) {
+    changeRouteStatus(request, done) {
+        let route = new Route(request.route.type, request.route.way,request.status,request.message);
+        loger.info("BL",route);
+        this.dal.changeRouteStatus(route,function (error) {
+            if (error) {
+                let err = {
+                    'result': false,
+                    'data': error.data,
+                    'error': error.code
+                };
+                done(err);
+            }
+            else {
+                let res = {
+                    'result': true
+                };
+                done(null, res);
+            }
 
-    }
-
-    sendMessage(body, file) {
-        let filePath = file ? file.path : undefined;
-        let message = new Message(body.message, [body.geotag[0], body.geotag[1]], new Date().toISOString(), filePath, 'unreaded');
-
-        return this.dal.insertMessage(message);
-    }
-
-    changeMessageStatus(message, status) {
-
-    }
-
-    changeRouteStatus(id, statusMessage) {
-
+        });
     }
 }
 

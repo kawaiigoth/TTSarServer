@@ -4,6 +4,10 @@ var path = require('path');
 var loger = require('./libs/loger')(module);
 var user_api = require('./Routes/user');
 var admin_api = require('./Routes/admin');
+var fs = require('fs');
+var createImgFolder =require('./libs/createImageFolder');
+
+createImgFolder();
 
 app.use(express.static(__dirname + '/api'));
 app.set('port', process.env.PORT || "8080");

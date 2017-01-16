@@ -1,19 +1,19 @@
 var pg = require('pg');
 var loger = require('../libs/loger')(module);
 var fs = require('fs');
+var cfg = require('../config');
 var Client = pg.Client;
-var config = {
-    user: 'postgres', //env var: PGUSER
-    database: 'TTSar', //env var: PGDATABASE
-    password: '123456789', //env var: PGPASSWORD
-    host: 'localhost', // Server hosting the postgres database
-    port: 5432 //env var: PGPORT
-
-};
+var config;
 
 class DAL {
     constructor() {
-
+        config = {
+            user: cfg.get('db:user'),
+            database: cfg.get('db:database'),
+            password: cfg.get('db:password'),
+            host: cfg.get('db:host'),
+            port: cfg.get('db:port')
+        };
     }
 
     getMessages(filter, done) {
@@ -62,7 +62,6 @@ class DAL {
     }
 
     getRoutes(done) {
-        loger.info('DAL - GetRoutes');
         let routes = [];
         var client = new Client(config);
         var routesQuery = client.query({
@@ -227,7 +226,6 @@ class DAL {
     }
 
     insertMessage(message, filePath, done) {
-        loger.info("DAl sendimg", message);
         var client = new Client(config);
         var routesQuery = client.query({
             text: "INSERT INTO " + '"Messages"' + " (message,photo,datetime,status,geo)  VALUES ($1, $2, $3, $4, $5)",

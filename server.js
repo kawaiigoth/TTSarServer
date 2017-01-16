@@ -5,12 +5,13 @@ var loger = require('./libs/loger')(module);
 var user_api = require('./Routes/user');
 var admin_api = require('./Routes/admin');
 var fs = require('fs');
-var createImgFolder =require('./libs/createImageFolder');
+var config = require('./config/index');
+var createImgFolder = require('./libs/createImageFolder');
 
 createImgFolder();
 
 app.use(express.static(__dirname + '/api'));
-app.set('port', process.env.PORT || "8080");
+app.set('port', process.env.PORT || config.get('port'));
 
 
 app.use('/api', user_api);
@@ -32,5 +33,5 @@ app.use(function (err, req, res, next) {
 
 });
 
-app.listen(app.get('port'));
-loger.info("Running at Port " + app.get('port'));
+app.listen(config.get('port'));
+loger.info("Running at Port " + config.get('port'));

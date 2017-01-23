@@ -93,10 +93,7 @@ class BL {
     }
 
     sendMessage(body, done) {
-        loger.info(body);
-        loger.info(body.geotag);
         let message = new Message(body.message, [body.geotag[0], body.geotag[1]], new Date().toISOString(), body.photo, 'unreaded');
-
         this.dal.sendMessage(message,function (error) {
             if (error) {
                 let err = {

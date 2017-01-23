@@ -5,10 +5,13 @@ var loger = require('./libs/loger')(module);
 var user_api = require('./Routes/user');
 var admin_api = require('./Routes/admin');
 var fs = require('fs');
+/*var init = require('./libs/initialization');*/
 var config = require('./config/index');
+
 var createImgFolder = require('./libs/createImageFolder');
 
 createImgFolder();
+
 
 app.use(express.static(__dirname + '/api'));
 app.set('port', process.env.PORT || config.get('port'));

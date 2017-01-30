@@ -36,7 +36,7 @@ class DAL {
                 };
                 done(error);
             } else {
-                done(null);
+                done(null,messages);
             }
         });
 
@@ -204,21 +204,27 @@ class DAL {
     }
 
     imageSave(message, done) {
-        let base64image = message.photo;
-        let filePath = "./uploaded_images/";
-        let file = filePath + Date.now() + ".base64";
-        fs.writeFile(file, base64image, 'base64', (err) => {
-            if (err) {
-                loger.error(err);
-                let error = {
-                    'data': err,
-                    'code': 30  //Image upload Error
-                };
-                done(error);
-            } else {
-                this.insertMessage(message, file, done);
-            }
-        });
+        if(message.photo !== null) {
+            let base64image = message.photo;
+            let filePath = "./uploaded_images/";
+            let file = filePath + Date.now() + ".base64";
+            fs.writeFile(file, base64image, 'base64', (err) => {
+                if (err) {
+                    loger.error(err);
+                    let error = {
+                        'data': err,
+                        'code': 30  //Image upload Error
+                    };
+                    done(error);
+                } else {
+                    this.insertMessage(message, file, done);
+                }
+            });
+        }
+        else{
+            let file = null;
+            this.insertMessage(message, file, done);
+        }
     }
 
     sendMessage(message, done) {

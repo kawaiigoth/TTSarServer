@@ -7,7 +7,7 @@ var admin_api = require('./Routes/admin');
 var fs = require('fs');
 /*var init = require('./libs/initialization');*/
 var config = require('./config/index');
-
+var server;
 var createImgFolder = require('./libs/createImageFolder');
 
 createImgFolder();
@@ -36,5 +36,18 @@ app.use(function (err, req, res, next) {
 
 });
 
-app.listen(config.get('port'));
-loger.info("Running at Port " + config.get('port'));
+function run() {
+    server = app.listen(config.get('port'));
+    loger.info("Running at Port " + config.get('port'));
+}
+
+function close() {
+    server.close();
+}
+
+if(module.parent){
+    exports.run = run;
+    exports.close = close;
+} else{
+    run();
+}

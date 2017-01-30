@@ -53,7 +53,6 @@ function requestInfo(req, res) {
 }
 
 function sendMessage(req, res) {
-
     bl.sendMessage(req.body,function (error, response) {
         if (error) {
             res.status(500).send(error);

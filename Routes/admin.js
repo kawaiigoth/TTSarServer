@@ -38,7 +38,7 @@ function changeRouteStatus(req, res) {
 }
 
 function requestMessages(req, res) {
-    //if all req undifined
+    loger.info('Requesting Messages');
     var date = req.query.from_date ? new Date(req.query.from_date).toISOString() : undefined;
     let filter = { 'shift': req.query.shift,
         'count': req.query.count,

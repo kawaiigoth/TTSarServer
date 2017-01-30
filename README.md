@@ -12,8 +12,8 @@
 
 ######Примечание:
 
- * 'libpq-dev' -  ставится так в Ubuntu http://askubuntu.com/questions/672408/can-not-install-libpq-dev-in-ubuntu-14-04
- * 'node-gyp rebuild' (вызывается во время 'npm install') требует python (работает со второй веткой по умолчанию)
+ * `libpq-dev` -  ставится так в Ubuntu http://askubuntu.com/questions/672408/can-not-install-libpq-dev-in-ubuntu-14-04
+ * `node-gyp rebuild` (вызывается во время `npm install`) требует python (работает со второй веткой по умолчанию)
  
  
 Для развертывания базы данных:

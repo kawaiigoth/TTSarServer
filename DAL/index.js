@@ -29,15 +29,9 @@ class DAL {
         });
 
         messagesQuery.on('end', function (result) {
-            if (result.rowCount == 0) {
-                let error = {
-                    'data': "Не найдено ни одной строки. Скорее всего фильтр задан не правильно.",
-                    'code': 11
-                };
-                done(error);
-            } else {
+
                 done(null,messages);
-            }
+
         });
 
         messagesQuery.on('error', function (err) {
@@ -103,15 +97,9 @@ class DAL {
         });
 
         routesQuery.on('end', function (result) {
-            if (result.rowCount == 0) {
-                let error = {
-                    'data': "Не найдено такой строки. Скорее всего такого маршрута не существует.",
-                    'code': 11
-                };
-                done(error);
-            } else {
+
                 done(null, route);
-            }
+
         });
 
         routesQuery.on('error', function (err) {
@@ -142,21 +130,11 @@ class DAL {
         });
 
         routesQuery.on('end', function (result) {
-            if (result.rowCount == 0) {
-                let error = {
-                    'data': "Ни одна строка не подверглась изменению. Скорее всего такого маршрута не существует.",
-                    'code': 31
-                };
-                done(error);
-            } else {
+
                 done(null);
-            }
 
         });
 
-        routesQuery.on('row', function (row, result) {
-
-        });
 
         routesQuery.on('error', function (err) {
             loger.error(err);
@@ -182,11 +160,11 @@ class DAL {
 
         routesQuery.on('end', function (result) {
             if (result.rowCount == 0) {
-                let error = {
-                    'data': "Ни одна строка не подверглась изменению. Скорее всего такого cообщения не существует.",
-                    'code': 31
+                let res = {
+                    'data': "Ни одна строка не подверглась изменению. Скорее всего такого маршрута не существует.",
+                    'code': '02'
                 };
-                done(error);
+                done(null,res);
             } else {
                 done(null);
             }

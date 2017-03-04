@@ -42,10 +42,6 @@ class BL {
                     done(err);
                 }
                 else {
-
-                    if (route.message == null) {
-                        route.message = "Добавьте информацию по маршруту";
-                    }
                     let res = {
                         'result': true,
                         'data': route
@@ -93,9 +89,8 @@ class BL {
     }
 
     sendMessage(body, done) {
-        loger.info("SENDMESSAGE", body);
-        if ('message' in body && body.message.length > 0)  {
-            let message = new Message(body.message, 'geotag' in body? [body.geotag[0], body.geotag[1]] : null, new Date().toISOString(), 'photo' in body &&  body.photo.length > 0? body.photo : null, 'unreaded');
+        if ('message' in body && body.message.length > 0) {
+            let message = new Message(body.message, 'geotag' in body ? [body.geotag[0], body.geotag[1]] : null, new Date().toISOString(), 'photo' in body && body.photo.length > 0 ? body.photo : null, 'unreaded');
             this.dal.sendMessage(message, function (error) {
                 if (error) {
                     let err = {
@@ -115,32 +110,42 @@ class BL {
             });
         }
         else {
-            let err = {
+            let res = {
                 'result': false,
                 'data': 'Empty body',
-                'error': '01'
+                "error": "02"
             };
-            done(err);
+            done(null, res);
         }
 
     }
 
     changeMessageStatus(request, done) {
-        if(!"status" in request || !request.status > 0){
-            let err = {
+        if (!"status" in request || !request.status > 0) {
+            let res = {
                 'result': false,
                 'data': "Отсуствует ключ status",
                 'error': "02"
             };
-            done(err);
-        }
-        let message_id = request.message_id;
-        let message_status = request.status;
-        if(message_status === "readed" || message_status === "unreaded") {
-
-
-            loger.info("Change this message satatus - ", message_id, message_status);
-            this.dal.changeMessageStatus(message_id, message_status, function (error) {
+            done(null, res);
+        } else if (!"message_id" in request || !request.message_id > 0) {
+            let res = {
+                'result': false,
+                'data': "Отсуствует или пустой ID",
+                'error': "02"
+            };
+            done(null, res);
+        } else if (request.status != "readed" && request.status != "unreaded") {
+            let res = {
+                'result': false,
+                'data': "Неправильный статус " + request.status,
+                'error': "02"
+            };
+            done(null, res);
+        } else {
+            let message_id = request.message_id;
+            let message_status = request.status;
+            this.dal.changeMessageStatus(message_id, message_status, function (error, res) {
                 if (error) {
                     let err = {
                         'result': false,
@@ -148,6 +153,13 @@ class BL {
                         'error': error.code
                     };
                     done(err);
+                } else if (res) {
+                    let resp = {
+                        'result': false,
+                        'data': res.data,
+                        'error': res.code
+                    };
+                    done(null, resp);
                 }
                 else {
                     let res = {
@@ -158,22 +170,26 @@ class BL {
 
             });
         }
-        else
-        {
-            let err = {
-                'result': false,
-                'data': "Неправильный статус" + message_status,
-                'error': "02"
-            };
-            done(err);
-        }
+
     }
 
     changeRouteStatus(request, done) {
-        if(request.status && request.message) {
-
-
-            let route = new Route(request.route.type, request.route.way, request.status, request.message);
+        if (!"status" in request || !request.status > 0) {
+            let res = {
+                'result': false,
+                'data': "Отсуствует ключ status",
+                'error': "02"
+            };
+            done(null, res);
+        } else if (!request.route) {
+            let res = {
+                'result': false,
+                'data': "Отсуствует ключ type или way",
+                'error': "02"
+            };
+            done(null, res);
+        } else {
+            let route = new Route(request.route.type, request.route.way, request.status, request.message? request.message : null);
             this.dal.changeRouteStatus(route, function (error) {
                 if (error) {
                     let err = {
@@ -192,15 +208,8 @@ class BL {
 
             });
         }
-        else {
-            let err = {
-                'result': false,
-                'data': "Отсуствует состояие или сообщение",
-                'error': '02'
-            };
-            done(err);
-        }
     }
 }
+
 
 module.exports = BL;
